@@ -58,6 +58,27 @@ public class Plan implements Comparable<Plan>{
         return planCost;
     }
 
+
+    public int getDays() {
+        return days;
+    }
+
+    public IRate getLocalCharge() {
+        return localCharge;
+    }
+
+    public int getLocalMins() {
+        return localMins;
+    }
+
+    public IRate getStdCharge() {
+        return stdCharge;
+    }
+
+    public int getStdMins() {
+        return stdMins;
+    }
+
     public float getCostPerMonth(){
         float multiFactor = (float) 30/ days;
         float localcost = localCharge.getRate()* localMins ;

@@ -1,5 +1,6 @@
 package prepaidCharges;
 
+import models.CombinationPlans;
 import models.Plan;
 import models.EachPlanBuilder;
 
@@ -22,8 +23,8 @@ public class PlanCharging {
         EachPlanBuilder build = new EachPlanBuilder();
         build.createNewPlanProduct();
         build.buildDays(30);
-        build.buildLocalCharge(50);
-        build.buildStdCharge(50);
+        build.buildLocalCharge(100);
+        build.buildStdCharge(100);
         build.buildLocalMins(100);
         build.buildStdMins(100);
         build.buildPlanCost(100);
@@ -74,16 +75,21 @@ public class PlanCharging {
         System.out.println("35Rs plan applied : "+plan4.getCostPerMonth());
 
 
-        Collections.sort(plans);
-
         System.out.println("===============after sorting================");
 //        for (Plan plan : plans){
 //            System.out.println(plan.getCostPerMonth());
 //        }
 
+        CombinationPlans cal = new CombinationPlans();
+        cal.setPlans(plans);
+        cal.calculateComboPlans();
 
-        System.out.println("least amount plan is "+plans.get(0).getCostPerMonth());
+        Collections.sort(plans);
+
+        System.out.println("least amount for individual plan is "+plans.get(0).getCostPerMonth());
 
     }
+
+
 
 }
