@@ -20,11 +20,13 @@ public class CombinationPlans {
 
     public void calculateComboPlans(){
 
-        for(Plan plan: plans)
-            for (Plan t1 : plans)
-                if (plan != t1)
-                    compare(plan, t1);
+//        for(Plan plan: plans)
+//            for (Plan t1 : plans)
+//                if (plan != t1)
+//                    compare(plan, t1);
+        ArrayList<Plan> data = new ArrayList<>();
 
+        findCombinations(plans, data, 0, plans.size()-1,0 , 2);
 
         System.out.println("total cost min with combination is : "+minVal +" for plan "+minPlan1+ " ,  "+ minPlan2);
     }
@@ -92,6 +94,31 @@ public class CombinationPlans {
 
 //        System.out.println("plan std cost "+plan.getPlanCost() + " days "+plan.getDays());
         return totalCost;
+    }
+
+
+    private void findCombinations(ArrayList<Plan> arr, ArrayList<Plan> data, int start,
+                         int end, int index, int r) {
+        
+        if (index == r)
+        {
+            for (int j=0; j<r; j++)
+                System.out.print(data.get(j)+" ");
+
+            compare(data.get(0), data.get(1));
+            System.out.println("");
+            return;
+        }
+
+        for (int i=start; i<=end && end-i+1 >= r-index; i++)
+        {
+            if(data.size() < 2)
+                data.add( arr.get(i));
+            else
+                data.set(index, arr.get(i) );
+
+            findCombinations(arr, data, i+1, end, index+1, r);
+        }
     }
 
 }
