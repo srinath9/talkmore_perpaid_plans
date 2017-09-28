@@ -14,6 +14,11 @@ public class CombinationPlans {
     private int minPlan1;
     private int minPlan2;
 
+    private int minStd = Integer.MAX_VALUE;
+    private int minLocal = Integer.MAX_VALUE;
+    private Plan minStdPlan;
+    private Plan minLocalPlan;
+
     public void setPlans(ArrayList<Plan> plans) {
         this.plans = plans;
     }
@@ -26,9 +31,40 @@ public class CombinationPlans {
 //                    compare(plan, t1);
         ArrayList<Plan> data = new ArrayList<>();
 
-        findCombinations(plans, data, 0, plans.size()-1,0 , 2);
-
+//        findCombinations(plans, data, 0, plans.size()-1,0 , 2);
+        findMinStdLocalPlan();
         System.out.println("total cost min with combination is : "+minVal +" for plan "+minPlan1+ " ,  "+ minPlan2);
+    }
+
+    private void findMinStdLocalPlan(){
+
+        // std plan based sorting
+        Collections.sort(plans, new Comparator<Plan>() {
+            @Override
+            public int compare(Plan plan, Plan t1) {
+
+                return plan.getStdCharge().getRate() > t1.getStdCharge().getRate() ? 1 : -1;
+
+            }
+        });
+
+        minStdPlan = plans.get(0);
+
+
+        // local plan based sorting
+        Collections.sort(plans, new Comparator<Plan>() {
+            @Override
+            public int compare(Plan plan, Plan t1) {
+
+                return plan.getLocalCharge().getRate() > t1.getLocalCharge().getRate() ? 1 : -1;
+
+            }
+        });
+
+        minLocalPlan = plans.get(0);
+
+        compare(minLocalPlan, minStdPlan);
+
     }
 
     public int compare(Plan plan, Plan t1) {
@@ -37,41 +73,45 @@ public class CombinationPlans {
 
         float local;
         float std;
-        if(plan.getLocalCharge().getRate() > t1.getLocalCharge().getRate())
-            local = calLocalCost(t1);
-
-        else if (plan.getLocalCharge().getRate() == t1.getLocalCharge().getRate()) {
-            if (plan.getPlanCost() > t1.getPlanCost())
+        if( plan != t1) {
+            if (plan.getLocalCharge().getRate() > t1.getLocalCharge().getRate())
                 local = calLocalCost(t1);
-            else
+
+            else if (plan.getLocalCharge().getRate() == t1.getLocalCharge().getRate()) {
+                if (plan.getPlanCost() > t1.getPlanCost())
+                    local = calLocalCost(t1);
+                else
+                    local = calLocalCost(plan);
+            } else
                 local = calLocalCost(plan);
-        }
-        else
-            local = calLocalCost(plan);
 
-        if(plan.getStdCharge().getRate() > t1.getStdCharge().getRate())
-            std = calStdCost(t1);
-
-        else if (plan.getStdCharge().getRate() == t1.getStdCharge().getRate()) {
-            if (plan.getPlanCost() > t1.getPlanCost())
+            if (plan.getStdCharge().getRate() > t1.getStdCharge().getRate())
                 std = calStdCost(t1);
-            else
-                std = calStdCost(plan);
-        }
-        else
-            std = calStdCost(plan);
 
-        int totalCost = (int) (local + std);
+            else if (plan.getStdCharge().getRate() == t1.getStdCharge().getRate()) {
+                if (plan.getPlanCost() > t1.getPlanCost())
+                    std = calStdCost(t1);
+                else
+                    std = calStdCost(plan);
+            } else
+                std = calStdCost(plan);
+
+            int totalCost = (int) (local + std);
 
 //        System.out.println("totoal "+totalCost);
 
-        if (totalCost < minVal ){
-            minVal = totalCost;
+            if (totalCost < minVal) {
+                minVal = totalCost;
+                minPlan1 = plan.getPlanCost();
+                minPlan2 = t1.getPlanCost();
+            }
+
+        }
+        else{
+            minVal = (int) plan.getCostPerMonth();
             minPlan1 = plan.getPlanCost();
             minPlan2 = t1.getPlanCost();
         }
-
-
 
         return 0;
     }
